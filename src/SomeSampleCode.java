@@ -10,7 +10,7 @@ public class SomeSampleCode {
         // The 3rd parameter is the length of the shortest path from this state to goal state.
         // E.g., 4 as the 3rd param will generate a random puzzle such that it is possible to
         // find a solution with length 4.
-        SlidingTilePuzzle puzzle = new SlidingTilePuzzle(3, 3, 4);
+        SlidingTilePuzzle puzzle = new SlidingTilePuzzle(3, 3, 3);
 
         // The SlidingTilePuzzle class overrides the toString method, so you can output
         // a puzzle state with a call to System.out.println as follows.
@@ -99,10 +99,12 @@ public class SomeSampleCode {
         SlidingTilePuzzleSolver solver = new SlidingTilePuzzleSolver();
 
         path = solver.uniformCostSearch(puzzle);
-        for(int i=0; i < path.size(); i++)
+        int counter = 0;
+        for(int i= 0; i < path.size(); i++)
         {
-            System.out.println("path Iteration: " + i);
+            System.out.println("path Iteration: " + counter);
             System.out.println(path.get(i));
+            counter++;
         }
 
 

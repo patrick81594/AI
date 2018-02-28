@@ -1,9 +1,10 @@
 
         import kotlin.reflect.jvm.internal.impl.types.checker.TypeIntersector;
         import org.jetbrains.annotations.NotNull;
-
+        import java.util.Iterator;
         import java.util.ArrayList;
         import java.util.HashMap;
+        import java.util.Set;
 
 /**
  * In this assignment, you will implement Uniform Cost Search as well as A* Search for Sliding Tile Puzzles (i.e., 8-puzzle, 15-puzzle, etc).
@@ -39,57 +40,67 @@ public class SlidingTilePuzzleSolver {
         HashMap<SlidingTilePuzzle, Integer> generatedSet = new HashMap<SlidingTilePuzzle, Integer>();
         HashMap<SlidingTilePuzzle, SlidingTilePuzzle> back = new HashMap<SlidingTilePuzzle, SlidingTilePuzzle>();
         ArrayList<SlidingTilePuzzle> path = new ArrayList<SlidingTilePuzzle>();
+        SlidingTilePuzzle atStart;
         //back is the backpointers
 
 
         pq.offer(start, 0);
         //add start to generated set
         generatedSet.put(start, 0);
-        back.put(start, null);	//start has a backpointer of null
+        back.put(start, null);    //start has a backpointer of null
 
-        SlidingTilePuzzle goalState = null;	//goal state found at end of while loop
-        while(!pq.isEmpty())
-        {
+        SlidingTilePuzzle goalState = null;    //goal state found at end of while loop
+        while (!pq.isEmpty()) {
             int priority = pq.peekPriority() + 1;
 
 
             SlidingTilePuzzle leastCost = pq.poll();
 
-            if(leastCost.isGoalState())
-            {
-                back.put(leastCost, leastCost);
-                for(SlidingTilePuzzle backtrack: back.keySet())
-                {
-                    //System.out.println(backtrack);
-                    path.add(backtrack);
+            if (leastCost.isGoalState()) {
+                back.put(leastCost, back.get(leastCost));
+                if(leastCost == start){
+                    path.add(start);
+                }
+                else {
+                    do {
+
+                        if(!path.contains(leastCost)) {
+                            path.add(leastCost);
+                        }
+                        path.add(back.get(leastCost));
+
+                        leastCost = back.get(leastCost);
+
+                    } while (back.get(leastCost) != null);
 
                 }
                 return path;
+
+
             }
 
             ArrayList<SlidingTilePuzzle> neighborList = leastCost.getSuccessors();
 
-            for(SlidingTilePuzzle successor: neighborList)
-            {
+            for (SlidingTilePuzzle successor : neighborList) {
                 //before putting, check generated set to make sure that the priority that is already in there
                 //is actually less than what you are trying to put. you dont want a higher priority inside generated set
                 //if you find a smaller priority than make sure to update the backpointer (back) for the new smaller path.
-                if(!generatedSet.containsKey(successor) && !pq.inPQ(successor)){
+                if (!generatedSet.containsKey(successor) && !pq.inPQ(successor)) {
                     pq.offer(successor, priority);
                     generatedSet.put(successor, priority);
-                }
-                else if(generatedSet.containsKey(successor) && generatedSet.get(successor) > priority)
-                {
+                    back.put(successor, leastCost);
+                } else if (generatedSet.containsKey(successor) && generatedSet.get(successor) > priority) {
                     generatedSet.replace(successor, priority);
+                    back.replace(successor, leastCost);
 
 
                 }
 
 
-                pq.offer(successor, priority);
             }
         }
-
+        return null;
+    }
 
         // I added a bunch of things below where non of them worked too well. try them out and see if you can get one working
 
@@ -101,14 +112,6 @@ public class SlidingTilePuzzleSolver {
 //		}
 
 
-        for(SlidingTilePuzzle backtrack: back.keySet())
-        {
-            //System.out.println(backtrack);
-            path.add(backtrack);
-
-        }
-
-
 //		SlidingTilePuzzle backpoint = back.get(goalState);
 //		while(backpoint != null)
 //		{
@@ -118,22 +121,6 @@ public class SlidingTilePuzzleSolver {
 //		}
 
 
-//		if(goalState != null)
-//		{
-//			while(back != null)
-//			{
-//				System.out.println(back.get(goalState));
-//				path.add(back.get(goalState));
-//			}
-//		}
-//		else
-//		{
-//			return null;
-//		}
-
-
-        return path;
-    }
 
     /**
      * Solves an instance of the Sliding Tile Puzzle using A* Search.
@@ -149,69 +136,7 @@ public class SlidingTilePuzzleSolver {
         /*****************************************************
          I probably did this all wrong. feel free to delete it all
          */
-        MinHeapPQ<SlidingTilePuzzle> pq = new MinHeapPQ<SlidingTilePuzzle>();
-        HashMap<SlidingTilePuzzle, Integer> generatedSet = new HashMap<SlidingTilePuzzle, Integer>();
-        HashMap<SlidingTilePuzzle, SlidingTilePuzzle> back = new HashMap<SlidingTilePuzzle, SlidingTilePuzzle>();
-
-        pq.offer(start, 0);
-        generatedSet.put(start, 0);
-        back.put(start, null);
-
-        SlidingTilePuzzle goalState = null;
-        while(!pq.isEmpty())
-        {
-            int priority = pq.peekPriority();
-            priority++;
-
-            SlidingTilePuzzle leastCost = pq.poll();
-            if(leastCost.isGoalState())
-            {
-                //back.put(null, leastCost);
-                goalState = leastCost;
-                break;
-            }
-
-            ArrayList<SlidingTilePuzzle> neighborList = leastCost.getSuccessors();
-
-            for(SlidingTilePuzzle successor: neighborList)
-            {
-                //before putting, check generated set to make sure that the priority that is already in there
-                //is actually less than what you are trying to put. you dont want a higher priority inside generated set
-                //if you find a smaller priority than make sure to update the backpointer (back) for the new smaller path.
-
-                if(generatedSet.containsKey(successor) && generatedSet.get(successor) > priority)
-                {
-                    //generatedSet.put(leastCost, i);
-                    generatedSet.put(successor, priority + (h.h(successor)));
-                    back.put(successor, leastCost);
-
-                }
-                else
-                {
-                    generatedSet.put(successor, priority + (h.h(successor)));
-                    back.put(successor, leastCost);
-                }
-
-                pq.offer(successor, priority + (h.h(successor)));
-            }
-        }
-
-        ArrayList<SlidingTilePuzzle> path = new ArrayList<SlidingTilePuzzle>();
-
-        if(goalState != null)
-        {
-            while(back != null)
-            {
-                path.add(back.get(goalState));
-            }
-        }
-        else
-        {
-            return null;
-        }
-
-
-        return path;
+        return null;
     }
 
     /**
