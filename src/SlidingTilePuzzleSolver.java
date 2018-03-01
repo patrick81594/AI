@@ -35,7 +35,8 @@ public class SlidingTilePuzzleSolver {
      */
     public static ArrayList<SlidingTilePuzzle> uniformCostSearch(SlidingTilePuzzle start) {
         // STEP 3: Implement Uniform Cost Search.  Read the comment above carefully for what this method should return.
-
+        numExpanded = 0;
+        numGenerated = 0;
         MinHeapPQ<SlidingTilePuzzle> pq = new MinHeapPQ<SlidingTilePuzzle>();
         HashMap<SlidingTilePuzzle, Integer> generatedSet = new HashMap<SlidingTilePuzzle, Integer>();
         HashMap<SlidingTilePuzzle, SlidingTilePuzzle> back = new HashMap<SlidingTilePuzzle, SlidingTilePuzzle>();
@@ -74,13 +75,14 @@ public class SlidingTilePuzzleSolver {
                     } while (back.get(leastCost) != null);
 
                 }
+                numGenerated = generatedSet.size();
                 return path;
 
 
             }
 
             ArrayList<SlidingTilePuzzle> neighborList = leastCost.getSuccessors();
-
+            numExpanded += 1;
             for (SlidingTilePuzzle successor : neighborList) {
                 //before putting, check generated set to make sure that the priority that is already in there
                 //is actually less than what you are trying to put. you dont want a higher priority inside generated set
@@ -99,6 +101,7 @@ public class SlidingTilePuzzleSolver {
 
             }
         }
+        numGenerated = generatedSet.size();
         return null;
     }
 
@@ -131,11 +134,74 @@ public class SlidingTilePuzzleSolver {
      * @return The solution path, i.e., the sequence of states from the start state to the goal state.  Returns null if instance has no solution.
      */
     public static ArrayList<SlidingTilePuzzle> AStarSearch(SlidingTilePuzzle start, SlidingTilePuzzleHeuristic h) {
-        // STEP 4: Implement A* Search.  Read the comment above carefully for what this method should return.
+        numExpanded = 0;
+        numGenerated = 0;
+        MinHeapPQ<SlidingTilePuzzle> pq = new MinHeapPQ<SlidingTilePuzzle>();
+        HashMap<SlidingTilePuzzle, Integer> generatedSet = new HashMap<SlidingTilePuzzle, Integer>();
+        HashMap<SlidingTilePuzzle, SlidingTilePuzzle> back = new HashMap<SlidingTilePuzzle, SlidingTilePuzzle>();
+        ArrayList<SlidingTilePuzzle> path = new ArrayList<SlidingTilePuzzle>();
 
-        /*****************************************************
-         I probably did this all wrong. feel free to delete it all
-         */
+        //back is the backpointers
+
+
+        pq.offer(start, 0);
+        //add start to generated set
+        generatedSet.put(start, 0);
+        back.put(start, null);    //start has a backpointer of null
+
+
+        while (!pq.isEmpty()) {
+
+
+            int gVal = pq.peekPriority() + 1;
+            SlidingTilePuzzle leastCost = pq.poll();
+
+
+            if (leastCost.isGoalState()) {
+                back.put(leastCost, back.get(leastCost));
+                if(leastCost == start){
+                    path.add(start);
+                }
+                else {
+                    do {
+
+                        if(!path.contains(leastCost)) {
+                            path.add(leastCost);
+                        }
+                        path.add(back.get(leastCost));
+
+                        leastCost = back.get(leastCost);
+
+                    } while (back.get(leastCost) != null);
+
+                }
+                numGenerated = generatedSet.size();
+                return path;
+
+
+            }
+
+            ArrayList<SlidingTilePuzzle> neighborList = leastCost.getSuccessors();
+            numExpanded += 1;
+            for (SlidingTilePuzzle successor : neighborList) {
+
+                int hVal = h.h(leastCost);
+                int fVal = hVal + gVal;
+                if (!generatedSet.containsKey(successor) && !pq.inPQ(successor)) {
+                    pq.offer(successor, fVal);
+                    generatedSet.put(successor, fVal);
+                    back.put(successor, leastCost);
+                } else if (generatedSet.containsKey(successor) && generatedSet.get(successor) > fVal) {
+                    generatedSet.replace(successor, fVal);
+                    back.replace(successor, leastCost);
+
+
+                }
+
+
+            }
+        }
+        numGenerated = generatedSet.size();
         return null;
     }
 

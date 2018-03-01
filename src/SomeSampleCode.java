@@ -1,8 +1,10 @@
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
 
 public class SomeSampleCode {
-
+    Stack stack2 = new Stack<SlidingTilePuzzle>();
     public static void main(String[] args) {
 
 
@@ -10,7 +12,7 @@ public class SomeSampleCode {
         // The 3rd parameter is the length of the shortest path from this state to goal state.
         // E.g., 4 as the 3rd param will generate a random puzzle such that it is possible to
         // find a solution with length 4.
-        SlidingTilePuzzle puzzle = new SlidingTilePuzzle(3, 3, 6);
+        SlidingTilePuzzle puzzle = new SlidingTilePuzzle(3, 3);
 
         // The SlidingTilePuzzle class overrides the toString method, so you can output
         // a puzzle state with a call to System.out.println as follows.
@@ -96,16 +98,58 @@ public class SomeSampleCode {
         System.out.println(puzzle);
 
         ArrayList<SlidingTilePuzzle> path = new ArrayList<SlidingTilePuzzle>();
+        ArrayList<SlidingTilePuzzle> path2 = new ArrayList<SlidingTilePuzzle>();
         SlidingTilePuzzleSolver solver = new SlidingTilePuzzleSolver();
-
+        Stack stack = new Stack<SlidingTilePuzzle>();
+        Stack stack2 = new Stack<SlidingTilePuzzle>();
         path = solver.uniformCostSearch(puzzle);
+
         int counter = 0;
-        for(int i= path.size()-1; i >= 0 ; i--)
-        {
-            System.out.println("path Iteration: " + counter);
-            System.out.println(path.get(i));
-            counter++;
+        if(path == null){
+            System.out.println("No solution");
         }
+        else {
+
+            for (SlidingTilePuzzle s : path) {
+                if (s == null) {
+                    break;
+                }
+
+                stack.push(s);
+            }
+            while (!stack.isEmpty()) {
+                System.out.println("path Iteration: " + counter);
+                System.out.println("UCS: " + '\n' + stack.pop() + "   " + SlidingTilePuzzleSolver.getNumExpandedStates()  + "   " + SlidingTilePuzzleSolver.getNumGeneratedStates());
+                counter++;
+
+            }
+
+        }
+        path2 = solver.AStarSearchManhattanDistance(puzzle);
+        counter = 0;
+        if(path == null){
+            System.out.println("No solution");
+        }
+        else {
+            for (SlidingTilePuzzle a : path2) {
+                if (a == null) {
+                    break;
+                }
+                stack2.push(a);
+            }
+            while (!stack2.isEmpty()) {
+                System.out.println("path Iteration: " + counter);
+                System.out.println("A*: " + '\n' + stack2.pop()+ "   " + SlidingTilePuzzleSolver.getNumExpandedStates() + "   " + SlidingTilePuzzleSolver.getNumGeneratedStates());
+                counter++;
+
+            }
+
+        }
+
+        /*
+        for a star to print out.
+         */
+
 
 
     }
