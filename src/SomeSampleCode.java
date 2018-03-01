@@ -1,4 +1,4 @@
-import java.util.HashMap;
+/*import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -119,7 +119,7 @@ public class SomeSampleCode {
             }
             while (!stack.isEmpty()) {
                 System.out.println("path Iteration: " + counter);
-                System.out.println("UCS: " + '\n' + stack.pop() + "   " + SlidingTilePuzzleSolver.getNumExpandedStates()  + "   " + SlidingTilePuzzleSolver.getNumGeneratedStates());
+                System.out.println("UCS: " + '\n' + stack.pop() + "Expanded: " + SlidingTilePuzzleSolver.getNumExpandedStates()  + "Generated: " + SlidingTilePuzzleSolver.getNumGeneratedStates());
                 counter++;
 
             }
@@ -139,7 +139,7 @@ public class SomeSampleCode {
             }
             while (!stack2.isEmpty()) {
                 System.out.println("path Iteration: " + counter);
-                System.out.println("A*: " + '\n' + stack2.pop()+ "   " + SlidingTilePuzzleSolver.getNumExpandedStates() + "   " + SlidingTilePuzzleSolver.getNumGeneratedStates());
+                System.out.println("A*: " + '\n' + stack2.pop()+ "Expanded: " + SlidingTilePuzzleSolver.getNumExpandedStates() + "Generated: " + SlidingTilePuzzleSolver.getNumGeneratedStates());
                 counter++;
 
             }
@@ -152,5 +152,3 @@ public class SomeSampleCode {
 
 
 
-    }
-}
