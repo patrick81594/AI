@@ -10,9 +10,13 @@ import java.util.Timer;
  *
  * STEP 9: Save the output of your program (STEP 8) to a text file, and include that file when you submit your assignment.
  *
- * STEP 10: Answer this question in this comment:  
+ * STEP 10: Answer this question in this comment:
+ *
  *     Question: Part of your step 8 should confirm the effect we saw in class that a more informed heuristic leads to fewer state expansions.
  *               Does it also have an effect on memory usage (i.e., number of generated states)?
+ *
+ *      Answer: Yes, it seems like it has an effect on memory usage essentially causing it to decrease dramatically for the most informed heuristic in A*Man
+ *
  *
  * EXTRA CREDIT INSTRUCTIONS:
  * You do not need to do all of the extra credit parts.  You can: (a) do none of them and thus get no extra credit, (b) do EXTRA CREDIT STEPS 11 and 12,
@@ -36,12 +40,12 @@ import java.util.Timer;
  */
 public class SlidingTileComparison {
 
-
+    static boolean first = true;
     public static void main(String[] args) {
         String[][] s = new String[4][6];
 
         System.out.println("Number Of Expanded States" + "           " + "Number Of Generated States" + "                       " + "CPU time");
-        System.out.println("L" + "    " + "UCS" + "   " + "A*Mis" + " " + "A*Man" + "                " + "L" + "    " + "UCS" + "   " + "A*Mis" + " " + "A*Man"+ "                " + "L" + "     " + "UCS" + "      " + "A*Mis" + "   " + "A*Man");
+        System.out.println("L" + "    " + "UCS" + "   " + "A*Mis" + " " + "A*Man" + "                " + "L" + "    " + "UCS" + "   " + "A*Mis" + " " + "A*Man"+ "                " + "L" + "     " + "UCS(ms)" + "   " + "A*Mis(ms)" + " " + "A*Man(ms)");
         // STEP 8:  Implement whatever code is necessary to do the following.
         //   For each of the following optimal path lengths (2, 4, 6, 8, 10) generate 10 random 8-puzzles (see sample code in SomeSampleCode).
         //   At each of those lengths, average the number of states expanded by UniformCostSearch and average the number of states generated
@@ -78,6 +82,7 @@ public class SlidingTileComparison {
         forAvg(2);
         forAvg(4);
         forAvg(6);
+        forAvg(8);
         forAvg(10);
 
     }
@@ -143,14 +148,21 @@ public class SlidingTileComparison {
 
 
         System.out.println(optimalPathLength + spaces(optimalPathLength) + avgExpUCS + spaces(avgExpUCS) + avgExpAStarMis + spaces(avgExpAStarMis) + avgExpAStarMan
-                + gapSpace(avgExpAStarMis) + optimalPathLength + spaces(optimalPathLength) + avgGenUCS + spaces(avgGenUCS) + avgGenAStarMis+ spaces(avgGenAStarMis) + avgGenAStarMan
+                + gapSpace(avgExpAStarMis)  + optimalPathLength + spaces(optimalPathLength) + avgGenUCS + spaces(avgGenUCS) + avgGenAStarMis+ spaces(avgGenAStarMis) + avgGenAStarMan
                 + gapSpace(avgGenAStarMan) + optimalPathLength + spaces(optimalPathLength) + avgTimeUCS + spaces( avgTimeUCS) + avgTimeMis + spaces(avgTimeMis) + avgTimeMan);
     }
     public static String gapSpace(int length){
+
         if(length >= 10 && length < 100){
             return "                  ";
         }
-        if(length >= 100){
+
+        if(length >= 100 && first){
+            first = false;
+            return "                  ";
+        }
+        if(length >= 100 && !first){
+
             return "                 ";
         }
         return "                   ";
@@ -170,11 +182,11 @@ public class SlidingTileComparison {
     }
     public static String spaces(float length){
 
-        if(length >= 100000){
-            return "   ";
+        if(length >= 100000 && length < 1000000){
+            return "    ";
         }
         if(length >= 1000000){
-            return " ";
+            return "   ";
         }
         return "    ";
     }
